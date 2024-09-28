@@ -44,6 +44,8 @@ export class ConsultarTarefasComponent {
   }
 
   onDelete(id: number) {
+    console.log(id);
+    
     this.httpClient
       .delete(`${environments.apiTarefas}/${id}`, { responseType: 'text' })
       .subscribe({

@@ -11,52 +11,62 @@ import {
 import { environments } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-cadastrar-tarefa',
+  selector: 'app-editar-tarefa',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './cadastrar-tarefa.component.html',
   styleUrl: './cadastrar-tarefa.component.css',
 })
-export class CadastrarTarefaComponent {
-  // atributos
-  categorias: any[] = [];
+export class EditarTarefaComponent {
+  //atributo
+  tarefa: any[] = [];
 
+  //método construtor
   constructor(private httpClient: HttpClient) {}
 
+  //estrutura do formulário:
   form = new FormGroup({
     nome: new FormControl('', [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(100),
     ]),
-    data: new FormGroup('', [Validators.required]),
-    descricao: new FormGroup('', [
+    data: new FormControl('', [Validators.required]),
+    descricao: new FormControl('', [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(250),
     ]),
-    categoriaId: new FormGroup('', [Validators.required]),
+    categoriaId: new FormControl('', [Validators.required]),
   });
 
+  //exibir os erros de validação de cada campo
   get f() {
     return this.form.controls;
   }
 
+  //função executada quando o componente for aberto
   ngOnInit() {
-    this.httpClient.get(environments.apiCategorias).subscribe({
+    //fazendo uma requisição para a API no serviço de consulta de categorias
+    this.httpClient.get(environments.apiTarefas).subscribe({
       next: (data) => {
-        this.categorias = data as any[];
-        console.log(this.categorias);
+        //capturando o retorno da consulta
+        this.tarefa = data as any;
       },
     });
   }
 
+  //função para enviar os dados do formulário para a API
   onSubmit() {
+    //fazendo a requisição POST para cadastra a tarefa na API
     this.httpClient
       .post(environments.apiTarefas, this.form.value, { responseType: 'text' })
       .subscribe({
         next: (data) => {
+          //capturando o retorno da API
+          //exibir mensagem para o usuário (pop-up)
           alert(data);
+          //limpar o formulário
           this.form.reset();
         },
       });

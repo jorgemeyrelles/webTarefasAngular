@@ -1,5 +1,6 @@
 <h3>Consulta de tarefas</h3>
 <p>Preencha o formulário para pesquisar tarefas.</p>
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="row">
     <div class="col-md-3">
@@ -23,10 +24,16 @@
       </div>
     </div>
     <div class="col-md-3">
-      <input type="submit" class="btn btn-success mt-4" value="Pesquisar" />
+      <input
+        type="submit"
+        class="btn btn-success mt-4"
+        value="Pesquisar"
+        [disabled]="form.invalid"
+      />
     </div>
   </div>
 </form>
+
 <div class="table-responsive mt-4">
   <table class="table table-sm">
     <thead>
@@ -38,20 +45,18 @@
         <th>Operações</th>
       </tr>
     </thead>
-    <tbody *ngFor="let e of tarefas">
-      <tr>
-        <td>{{ e.data }}</td>
-        <td>{{ e.nome }}</td>
-        <td>{{ e.descricao }}</td>
-        <td>{{ e.categoria.nome }}</td>
+    <tbody>
+      <tr *ngFor="let t of tarefas">
+        <td>{{ t.data | date : "dd/MM/yyyy" }}</td>
+        <td>{{ t.nome }}</td>
+        <td>{{ t.descricao }}</td>
+        <td>{{ t.categoria.nome }}</td>
         <td>
+          <button class="btn btn-sm btn-outline-primary me-2">Editar</button>
           <button
-            class="btn btn-sm btn-primary me-2"
-            [routerLink]="['/pages/editar-tarefa', e.id]"
+            (click)="onDelete(t.id)"
+            class="btn btn-sm btn-outline-danger"
           >
-            Editar
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="onDelete(e.id)">
             Excluir
           </button>
         </td>
